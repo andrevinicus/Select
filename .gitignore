@@ -1,0 +1,21 @@
+select date_trunc('Month', msec_dh_ent)as Mes,grpr_descricao as modalidade,count(msec_dh_ent)as quantidade  
+from mvto_servicod ms
+inner join gruporecursos g on grpr_codigo = msed_grpr_codigo 
+inner join mvto_servicoc on msec_numero = msed_msec_numero and msec_codun = msed_codun
+where msed_status_laudo = 'EN' and msed_codun = '002' and date (msec_dh_ent) between '2022-01-01' and '2022-09-30'
+group by date_trunc('Month', msec_dh_ent), grpr_descricao
+union 
+select null, 'total', count(grpr_descricao)as total 
+from mvto_servicod ms
+inner join gruporecursos g on grpr_codigo = msed_grpr_codigo 
+inner join mvto_servicoc on msec_numero = msed_msec_numero and msec_codun = msed_codun
+where msed_status_laudo = 'EN' and msed_codun = '002' and date (msec_dh_ent) between '2022-01-01' and '2022-09-30' 
+order by mes
+///////////////////////////////////////////////////////////////////
+select date_trunc('Month', msed_datahora_rec)as mes, pros_nome as Nome, grpr_descricao as modalidade,count(pros_nome)as qtd
+from mvto_servicod ms 
+inner join profsaude p2 on pros_codigo = msed_pros_codigo_at 
+inner join gruporecursos g on grpr_codigo = msed_grpr_codigo 
+where msed_pros_codigo_at in(113,84,69) and date (msed_datahora_rec) between '2022-07-01' and '2022-07-31' 
+and msed_status = 'F' and msed_codun = '001'
+group by date_trunc('Month', msed_datahora_rec), pros_nome, grpr_descricao
